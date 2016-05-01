@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Jquery非同期通信+PHPでお問い合わせフォーム</title>
+<style type="text/css">
+table {
+  border: 1px solid #CCC;
+  border-collapse: collapse;
+}
+table tr th {
+  text-align: right;
+  padding: 8px;
+  border: 1px solid #CCC;
+}
+table tr td {
+  padding: 8px;
+  border: 1px solid #CCC;
+}
+</style>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+   //$("#button").click(function(){ //これペケ
+     
+   $(document).on('click','#button',function(e){ // クリックで実行 2014-07-24 修正
+      
+      if( $("#name").val() && $("#email").val() && $("#str").val() ){
+         
+         if(!$("#email").val().match("^[0-9A-Za-z._\-]+@[0-9A-Za-z.\-]+$")){
+            $('#error').html('メールアドレス形式で記入して下さい');
+            return false;
+         }
+         var data = $("#form").serialize(); //送信されたデータ
+         $('#form').html('<img src="../lib/loader2.gif" />'); //ローディング画像を表示
+         $.ajax({
+            type: "POST",
+            url: "./mail.php", //PHPを呼び出す
+            data: data, //記入されたデータを渡す
+            success: function(xml){
+               $('#form').html('メールを送信しました');
+            }
+         });
+      } else {
+         $('#error').html('未記入の項目が有ります');
+      }
+
+
+   });
+});
+</script>
+</head>
+
+<body>
+<div id="header"></div>
+<div id="container">
+  <div id="mein">
+    <h1>Jquery非同期通信+PHPでお問い合わせフォーム</h1>
+    <form id="form" name="form">
+       <span id="error" style="color:red"></span>
+      <table>
+      <tr>
+        <th>お名前</th>
+        <td>
+          <input name="name" type="text" id="name" size="20">
+        </td>
+      </tr>
+      <tr>
+        <th>メールアドレス</th>
+        <td>
+          <input name="email" type="text" id="email" size="35">
+        </td>
+      </tr>
+      <tr>
+        <th>内容</th>
+        <td>
+          <input name="str" type="text" id="str" size="35">
+        </td>
+      </tr>
+      <tr>
+        <th>&nbsp;</th>
+        <td>
+          <input type="button" name="button" id="button" value="メールを送信する">
+        </td>
+      </tr>
+      </table>
+    </form>
+    </div>
+</div>
+</body>
+</html>
